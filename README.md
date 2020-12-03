@@ -1,9 +1,4 @@
 # Todo-app-in-react-native
-# Parents Soundboard
-
-A soundboard developed for parents to be able to play often needed phrases like "No".
-
-The texts can be edited and are spoken via TTS. You can change the TTS voice in the settings.
 
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
