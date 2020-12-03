@@ -1,5 +1,5 @@
 # Todo-app-in-react-native
-
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/n8VU8snnwzg/0.jpg)](https://www.youtube.com/watch?v=n8VU8snnwzg)
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 # Releases
