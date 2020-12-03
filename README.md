@@ -10,8 +10,7 @@ This project was bootstrapped with [Create React Native App](https://github.com/
 # Run locally on your development machine
 
 ```
-$ git clone https://github.com/Mokkapps/parents-soundboard
-$ cd parents-soundboard
+
 $ yarn install
 $ yarn start
 
