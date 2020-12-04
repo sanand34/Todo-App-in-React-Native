@@ -20,7 +20,7 @@ function Main() {
 
       <ScrollView style={styles.body}>
         {todos.map((todo) => (
-          <Todo todo={todo} />
+          <Todo key={todo} todo={todo} />
         ))}
       </ScrollView>
       <View>
