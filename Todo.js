@@ -1,24 +1,45 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Checkbox, Button } from "react-native-paper";
-
 import { useStateValue } from "./StateProvider";
 import { actionTypes } from "./reducer";
+import { _storeData } from "./Main";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Todo = ({ todo }) => {
-  const [{}, dispatch] = useStateValue();
-  const [checked, setChecked] = useState(false);
+  const [{ todos, user }, dispatch] = useStateValue();
+  const [checked, setChecked] = useState(todo.check);
+
   return (
     <View style={styles.container}>
       <Checkbox
-        status={checked ? "checked" : "unchecked"}
+        status={checked ? true : false}
         onPress={() => {
-          setChecked(!checked);
+          async function _storeData(value) {
+            try {
+              await AsyncStorage.setItem("10~Tasks", JSON.stringify(value));
+            } catch (error) {
+              console.log(error);
+            }
+          }
+          const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
+          setChecked(!todo.check);
+          _storeData([
+            { key: todo.key, todo: todo.todo, check: !todo.check },
+            ...newinfo,
+          ]);
+          dispatch({
+            type: actionTypes.SET_TODOS,
+            todos: [
+              { key: todo.key, todo: todo.todo, check: !todo.check },
+              ...newinfo,
+            ],
+          });
         }}
         color="white"
       />
       <View style={styles.todo}>
         <Text style={checked ? styles.textinvalid : styles.textvalid}>
-          {todo}
+          {todo.todo}
         </Text>
       </View>
 
@@ -28,7 +49,7 @@ const Todo = ({ todo }) => {
         onPress={() => {
           dispatch({
             type: actionTypes.SET_USER,
-            user: todo,
+            user: todo.key,
           });
         }}
       >
