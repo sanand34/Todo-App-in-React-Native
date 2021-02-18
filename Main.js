@@ -24,14 +24,20 @@ function Main() {
           type: actionTypes.SET_TODOS,
           todos: JSON.parse(value),
         });
+        try {
+          await AsyncStorage.setItem("10~Tasks", value);
+        } catch (error) {
+          console.log(error);
+        }
 
-        console.log(value);
+        console.log(JSON.parse(value));
       } else {
+        const key = v4();
         dispatch({
           type: actionTypes.SET_TODOS,
-          todos: [{ key: v4(), todo: "Welcome", check: false }],
+          todos: [{ key: key, todo: "Welcome", check: false }],
         });
-        _storeData([{ key: v4(), todo: "Welcome", check: false }]);
+        _storeData([{ key: key, todo: "Welcome", check: false }]);
       }
     } catch (error) {
       console.log(error);
@@ -42,11 +48,12 @@ function Main() {
   }, []);
   useEffect(() => {
     const newinfo = todos.filter((todo) => todo.key !== user);
-    _storeData(newinfo);
-    dispatch({
-      type: actionTypes.SET_TODOS,
-      todos: newinfo,
-    });
+    todos && _storeData(newinfo);
+    todos &&
+      dispatch({
+        type: actionTypes.SET_TODOS,
+        todos: newinfo,
+      });
   }, [user]);
 
   return (
