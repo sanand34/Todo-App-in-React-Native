@@ -11,13 +11,13 @@ function Main() {
   const [{ user, todos }, dispatch] = useStateValue();
   const didMountRef = useRef(false);
   const array = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday",
   ];
   const getDate = () => {
     let date = new Date();
@@ -55,7 +55,7 @@ function Main() {
         daydate = "pm";
       }
     }
-    return `\n${day}\n\n${array[weekday - 1]} ${hr}:${min}:${sec} ${daydate}\n`;
+    return `\n${day}\n\n${array[weekday]} ${hr}:${min}:${sec} ${daydate}\n`;
   };
   Array.prototype.sortBy = function (p) {
     return this.slice(0).sort(function (a, b) {
