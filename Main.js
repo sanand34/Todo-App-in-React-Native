@@ -22,40 +22,26 @@ function Main() {
   const getDate = () => {
     let date = new Date();
     let weekday = date.getDay();
-    let daydate = "am";
     let currentDate = /[0-9]*:[0-9]*:[0-9]*/g.exec(JSON.stringify(date));
     let day = /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(date));
-    let hr = parseInt(/[0-9][0-9]/g.exec(JSON.stringify(currentDate)));
+    let hr = parseInt(/[0-9][0-9]/g.exec(JSON.stringify(currentDate))) + 5;
 
-    let min = parseInt(
-      /[0-9][0-9]/g.exec(
-        JSON.stringify(/:[0-9][0-9]:/g.exec(JSON.stringify(currentDate)))
-      )
-    );
+    let min =
+      parseInt(
+        /[0-9][0-9]/g.exec(
+          JSON.stringify(/:[0-9][0-9]:/g.exec(JSON.stringify(currentDate)))
+        )
+      ) + 30;
     let sec = /[0-9][0-9]/g.exec(
       JSON.stringify(/[0-9][0-9][^:]/g.exec(JSON.stringify(currentDate)))
     );
+    hr = hr + Math.floor(min / 60);
+    min = min % 60;
+    if (hr > 24 || hr === 24) {
+      hr = hr - 24;
+    }
 
-    if (hr + 5 > 12) {
-      hr = hr - 12 + 5;
-      min = min + 30;
-      hr = hr + Math.floor(min / 60);
-      min = min % 60;
-      daydate = "pm";
-    } else {
-      hr = hr + 5;
-      min = min + 30;
-      hr = hr + Math.floor(min / 60);
-      min = min % 60;
-    }
-    if (hr === 12) {
-      if (daydate === "pm") {
-        daydate = "am";
-      } else {
-        daydate = "pm";
-      }
-    }
-    return `\n${day}\n\n${array[weekday]} ${hr}:${min}:${sec} ${daydate}\n`;
+    return `\n${day}\n\n${array[weekday]} ${hr}:${min}:${sec} \n`;
   };
   Array.prototype.sortBy = function (p) {
     return this.slice(0).sort(function (a, b) {
