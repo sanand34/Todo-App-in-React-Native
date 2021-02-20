@@ -21,7 +21,7 @@ function Main() {
   ];
   const getDate = () => {
     let date = new Date();
-    const weekday = date.getDay();
+    let weekday = date.getDay();
     let daydate = "am";
     let currentDate = /[0-9]*:[0-9]*:[0-9]*/g.exec(JSON.stringify(date));
     let day = /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(date));
@@ -35,6 +35,7 @@ function Main() {
     let sec = /[0-9][0-9]/g.exec(
       JSON.stringify(/[0-9][0-9][^:]/g.exec(JSON.stringify(currentDate)))
     );
+
     if (hr + 5 > 12) {
       hr = hr - 12 + 5;
       min = min + 30;
@@ -46,6 +47,13 @@ function Main() {
       min = min + 30;
       hr = hr + Math.floor(min / 60);
       min = min % 60;
+    }
+    if (hr === 12) {
+      if (daydate === "pm") {
+        daydate = "am";
+      } else {
+        daydate = "pm";
+      }
     }
     return `\n${day}\n\n${array[weekday - 1]} ${hr}:${min}:${sec} ${daydate}\n`;
   };

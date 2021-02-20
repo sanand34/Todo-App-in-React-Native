@@ -14,7 +14,6 @@ import { Checkbox } from "react-native-paper";
 import { useStateValue } from "./StateProvider";
 import { actionTypes } from "./reducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const date = /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(new Date()));
 const { width } = Dimensions.get("window");
 const Todo = ({ todo }) => {
   const [{ todos }, dispatch] = useStateValue();
@@ -24,7 +23,9 @@ const Todo = ({ todo }) => {
 
   // This is to manage TextInput State
   const [inputValue, setInputValue] = useState("");
-  const [_inputValue, set_InputValue] = useState(date[0]);
+  const [_inputValue, set_InputValue] = useState(
+    /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(new Date()))[0]
+  );
 
   // Create toggleModalVisibility function that will
   // Open and close modal upon button clicks.
@@ -48,7 +49,10 @@ const Todo = ({ todo }) => {
   }
   useEffect(() => {
     const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
-    if (date[0] == todo.due_date) {
+    if (
+      /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(new Date()))[0] ==
+      todo.due_date
+    ) {
       _storeData([
         ...newinfo,
         {
