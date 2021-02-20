@@ -35,7 +35,7 @@ function Main() {
     let sec = /[0-9][0-9]/g.exec(
       JSON.stringify(/[0-9][0-9][^:]/g.exec(JSON.stringify(currentDate)))
     );
-    if (hr > 12) {
+    if (hr + 5 > 12) {
       hr = hr - 12 + 5;
       min = min + 30;
       hr = hr + Math.floor(min / 60);
