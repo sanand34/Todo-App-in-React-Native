@@ -32,6 +32,8 @@ const Todo = ({ todo }) => {
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
   };
+
+  //viewing details about todo
   const viewData = () =>
     Alert.alert(
       todo.todo,
@@ -40,6 +42,7 @@ const Todo = ({ todo }) => {
       { cancelable: false }
     );
 
+  //storing data in async storage
   async function _storeData(value) {
     try {
       await AsyncStorage.setItem("10~Tasks", JSON.stringify(value));
@@ -47,6 +50,8 @@ const Todo = ({ todo }) => {
       console.log(error);
     }
   }
+
+  //if due date is current date set due date today
   useEffect(() => {
     const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
     if (

@@ -19,6 +19,8 @@ function Main() {
     "Friday",
     "Saturday",
   ];
+
+  //Get Indian Standard time
   const getDate = () => {
     let date = new Date();
     let weekday = date.getDay();
@@ -43,6 +45,8 @@ function Main() {
 
     return `\n${day}\n\n${array[weekday]} ${hr}:${min}:${sec} \n`;
   };
+
+  //Sorting todos
   Array.prototype.sortBy = function (p) {
     return this.slice(0).sort(function (a, b) {
       return a[p] < b[p] ? 1 : a[p] > b[p] ? -1 : 0;
@@ -55,6 +59,8 @@ function Main() {
       console.log(error);
     }
   }
+
+  //Receiving data from async storage
   async function _retrieveData() {
     try {
       const value = await AsyncStorage.getItem("10~Tasks");
@@ -95,9 +101,12 @@ function Main() {
     }
   }
 
+  //fetching data once when the component loads
   useEffect(() => {
     _retrieveData();
   }, []);
+
+  //Deletion of todo
   useEffect(() => {
     if (didMountRef.current) {
       const newinfo = todos.filter((todo) => todo.key !== user);
