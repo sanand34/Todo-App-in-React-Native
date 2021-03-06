@@ -82,7 +82,7 @@ const Todo = ({ todo }) => {
         ],
       });
     }
-  }, [todo.due_date]);
+  });
 
   return (
     <View style={styles.container}>
