@@ -13,26 +13,40 @@ import {
 import { Checkbox } from "react-native-paper";
 import { useStateValue } from "./StateProvider";
 import { actionTypes } from "./reducer";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width } = Dimensions.get("window");
+import DatePicker from "react-native-datepicker";
 const Todo = ({ todo }) => {
   const [{ todos }, dispatch] = useStateValue();
-
+  const [date, setDate] = useState();
   // This is to manage Modal State
   const [isModalVisible, setModalVisible] = useState(false);
 
   // This is to manage TextInput State
   const [inputValue, setInputValue] = useState("");
-  const [_inputValue, set_InputValue] = useState(
-    /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(new Date()))[0]
-  );
+  const [_inputValue, set_InputValue] = useState("Tue Mar  9  2021");
 
   // Create toggleModalVisibility function that will
   // Open and close modal upon button clicks.
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
   };
+  const presentDate = () => {
+    let today = new Date();
 
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1;
+
+    let yyyy = today.getFullYear();
+    if (dd < 10) {
+      dd = "0" + dd;
+    }
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+    return yyyy + "/" + mm + "/" + dd;
+  };
   //viewing details about todo
   const viewData = () =>
     Alert.alert(
@@ -54,10 +68,7 @@ const Todo = ({ todo }) => {
   //if due date is current date set due date today
   useEffect(() => {
     const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
-    if (
-      /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(new Date()))[0] ==
-      todo.due_date
-    ) {
+    if (presentDate() == todo.due_date) {
       _storeData([
         ...newinfo,
         {
@@ -194,12 +205,29 @@ const Todo = ({ todo }) => {
                 toggleModalVisibility();
               }}
             />
-            <TextInput
-              placeholder="Edit Due Date..."
-              value={_inputValue}
-              style={styles.textInput}
-              onChangeText={(value) => set_InputValue(value)}
-              onSubmitEditing={() => {
+            <DatePicker
+              style={{ width: 200 }}
+              date={date}
+              mode="date"
+              placeholder="select date"
+              format="YYYY/MM/DD"
+              minDate={presentDate()}
+              maxDate="2030/05/01"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: "absolute",
+                  left: 0,
+                  top: 4,
+                  marginLeft: 0,
+                },
+                dateInput: {
+                  marginLeft: 36,
+                },
+                // ... You can check the source to find the other keys.
+              }}
+              onDateChange={(date) => {
                 const newinfo = todos.filter(
                   (thistodo) => thistodo.key !== todo.key
                 );
@@ -210,7 +238,7 @@ const Todo = ({ todo }) => {
                     todo: todo.todo,
                     check: todo.check,
                     date: todo.date,
-                    due_date: _inputValue,
+                    due_date: date,
                   },
                 ]);
                 dispatch({
@@ -222,7 +250,7 @@ const Todo = ({ todo }) => {
                       todo: todo.todo,
                       check: todo.check,
                       date: todo.date,
-                      due_date: _inputValue,
+                      due_date: date,
                     },
                   ],
                 });
@@ -294,12 +322,12 @@ const styles = StyleSheet.create({
     color: "white",
   },
   text1: {
-    fontSize: 25,
+    fontSize: 20,
 
     color: "red",
   },
   text2: {
-    fontSize: 25,
+    fontSize: 20,
 
     color: "lightgreen",
   },

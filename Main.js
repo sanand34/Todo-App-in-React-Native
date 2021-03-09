@@ -6,44 +6,21 @@ import { useStateValue } from "./StateProvider";
 import { Appbar, TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { actionTypes } from "./reducer";
+
 function Main() {
   const [input, setInput] = useState();
+
   const [{ user, todos }, dispatch] = useStateValue();
   const didMountRef = useRef(false);
-  const array = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
 
   //Get Indian Standard time
   const getDate = () => {
-    let date = new Date();
-    let weekday = date.getDay();
-    let currentDate = /[0-9]*:[0-9]*:[0-9]*/g.exec(JSON.stringify(date));
-    let day = /[0-9]*-[0-9]*-[0-9]*/g.exec(JSON.stringify(date));
-    let hr = parseInt(/[0-9][0-9]/g.exec(JSON.stringify(currentDate))) + 5;
-
-    let min =
-      parseInt(
-        /[0-9][0-9]/g.exec(
-          JSON.stringify(/:[0-9][0-9]:/g.exec(JSON.stringify(currentDate)))
-        )
-      ) + 30;
-    let sec = /[0-9][0-9]/g.exec(
-      JSON.stringify(/[0-9][0-9][^:]/g.exec(JSON.stringify(currentDate)))
-    );
-    hr = hr + Math.floor(min / 60);
-    min = min % 60;
-    if (hr > 24 || hr === 24) {
-      hr = hr - 24;
-    }
-
-    return `\n${day}\n\n${array[weekday]} ${hr}:${min}:${sec} \n`;
+    let d = new Date();
+    let ank = d.toLocaleString();
+    let currentDate = /[0-9]*:[0-9]*:[0-9]*/g.exec(JSON.stringify(ank));
+    let day = /[A-za-z\ ]+[A-za-z\ ]+[0-9\ ]/g.exec(JSON.stringify(ank));
+    let year = /[0-9][0-9][0-9][0-9]/g.exec(JSON.stringify(ank));
+    return `${day}  ${year}\n${currentDate}`;
   };
 
   //Sorting todos
