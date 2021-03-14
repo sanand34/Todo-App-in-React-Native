@@ -18,7 +18,7 @@ function Main() {
     let d = new Date();
     let ank = d.toLocaleString();
     let currentDate = /[0-9]*:[0-9]*:[0-9]*/g.exec(JSON.stringify(ank));
-    let day = /[A-za-z\ ]+[A-za-z\ ]+[0-9\ ]/g.exec(JSON.stringify(ank));
+    let day = /[A-za-z]+ [A-za-z]+ [0-9]+/g.exec(JSON.stringify(ank));
     let year = /[0-9][0-9][0-9][0-9]/g.exec(JSON.stringify(ank));
     return `${day}  ${year}\n${currentDate}`;
   };
