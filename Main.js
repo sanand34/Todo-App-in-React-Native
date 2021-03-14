@@ -6,6 +6,7 @@ import { useStateValue } from "./StateProvider";
 import { Appbar, TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { actionTypes } from "./reducer";
+import Notify from "./Notification.js";
 
 function Main() {
   const [input, setInput] = useState();
@@ -107,6 +108,7 @@ function Main() {
           <Todo key={todo.key} todo={todo} />
         ))}
       </ScrollView>
+      <Notify />
       <View>
         <TextInput
           label="Add Todo"

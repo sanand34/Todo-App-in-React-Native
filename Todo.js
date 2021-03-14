@@ -13,6 +13,7 @@ import {
 import { Checkbox } from "react-native-paper";
 import { useStateValue } from "./StateProvider";
 import { actionTypes } from "./reducer";
+import { schedulePushNotification } from "./Notification.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width } = Dimensions.get("window");
@@ -25,7 +26,6 @@ const Todo = ({ todo }) => {
 
   // This is to manage TextInput State
   const [inputValue, setInputValue] = useState("");
-  const [_inputValue, set_InputValue] = useState("Tue Mar  9  2021");
 
   // Create toggleModalVisibility function that will
   // Open and close modal upon button clicks.
@@ -93,7 +93,7 @@ const Todo = ({ todo }) => {
         ],
       });
     }
-  });
+  }, [todo.due_date]);
 
   return (
     <View style={styles.container}>
@@ -129,8 +129,9 @@ const Todo = ({ todo }) => {
       />
       <View style={styles.todo}>
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             viewData();
+            await schedulePushNotification(todo.todo, todo.due_date);
           }}
         >
           <Text style={todo.check ? styles.textinvalid : styles.textvalid}>
@@ -209,7 +210,7 @@ const Todo = ({ todo }) => {
               style={{ width: 200 }}
               date={date}
               mode="date"
-              placeholder="select date"
+              placeholder={date}
               format="YYYY/MM/DD"
               minDate={presentDate()}
               maxDate="2030/05/01"
@@ -254,16 +255,18 @@ const Todo = ({ todo }) => {
                     },
                   ],
                 });
+                setDate(date);
 
                 toggleModalVisibility();
               }}
             />
-
-            <Button
-              color="rgb(100,73,234)"
-              title="Close"
-              onPress={toggleModalVisibility}
-            />
+            <View style={{ margin: 10 }}>
+              <Button
+                color="rgb(100,73,234)"
+                title="Close"
+                onPress={toggleModalVisibility}
+              />
+            </View>
           </View>
         </View>
       </Modal>

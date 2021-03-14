@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Main from "./Main";
 import reducer, { initialState } from "./reducer.js";
 import { StateProvider } from "./StateProvider";
