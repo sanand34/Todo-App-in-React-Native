@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -26,6 +26,7 @@ const Todo = ({ todo }) => {
 
   // This is to manage TextInput State
   const [inputValue, setInputValue] = useState("");
+  const didMountRef = useRef(false);
 
   // Create toggleModalVisibility function that will
   // Open and close modal upon button clicks.
@@ -67,21 +68,10 @@ const Todo = ({ todo }) => {
 
   //if due date is current date set due date today
   useEffect(() => {
-    const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
-    if (presentDate() == todo.due_date) {
-      _storeData([
-        ...newinfo,
-        {
-          key: todo.key,
-          todo: todo.todo,
-          check: todo.check,
-          date: todo.date,
-          due_date: "Today",
-        },
-      ]);
-      dispatch({
-        type: actionTypes.SET_TODOS,
-        todos: [
+    if (didMountRef.current) {
+      const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
+      if (presentDate() == todo.due_date) {
+        _storeData([
           ...newinfo,
           {
             key: todo.key,
@@ -90,9 +80,22 @@ const Todo = ({ todo }) => {
             date: todo.date,
             due_date: "Today",
           },
-        ],
-      });
-    }
+        ]);
+        dispatch({
+          type: actionTypes.SET_TODOS,
+          todos: [
+            ...newinfo,
+            {
+              key: todo.key,
+              todo: todo.todo,
+              check: todo.check,
+              date: todo.date,
+              due_date: "Today",
+            },
+          ],
+        });
+      }
+    } else didMountRef.current = true;
   }, [todo.due_date]);
 
   return (

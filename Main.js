@@ -7,7 +7,20 @@ import { Appbar, TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { actionTypes } from "./reducer";
 import Notify from "./Notification.js";
+import * as BackgroundFetch from "expo-background-fetch";
+import * as TaskManager from "expo-task-manager";
+BackgroundFetch.setMinimumIntervalAsync(15);
+const taskName = "test-background-fetch";
+TaskManager.defineTask(taskName, async () => {
+  try {
+    await AsyncStorage.setItem("TASKS", "I like to save it.");
+  } catch (error) {
+    alert("tanımlama hatası");
+    // Error saving data
+  }
 
+  return BackgroundFetch.Result.NewData;
+});
 function Main() {
   const [input, setInput] = useState();
 
@@ -47,8 +60,6 @@ function Main() {
           type: actionTypes.SET_TODOS,
           todos: JSON.parse(value),
         });
-
-        console.log(JSON.parse(value));
       } else {
         const date = getDate();
         const key = v4();
@@ -77,11 +88,52 @@ function Main() {
     } catch (error) {
       console.log(error);
     }
+    return;
   }
+  const taskManager = async () => {
+    await BackgroundFetch.registerTaskAsync(taskName);
+    console.log("task registered");
 
+    const status = await BackgroundFetch.getStatusAsync();
+
+    switch (status) {
+      case BackgroundFetch.Status.Restricted:
+        alert("Restrict");
+        break;
+      case BackgroundFetch.Status.Denied:
+        alert("Background execution is disabled");
+        break;
+
+      case BackgroundFetch.Status.Available:
+        alert("Avaible");
+
+        break;
+
+      default: {
+        alert("Background execution allowed");
+
+        let tasks = await TaskManager.getRegisteredTasksAsync();
+        if (tasks.find((f) => f.taskName === taskName) == null) {
+          alert("Registering task");
+          await BackgroundFetch.registerTaskAsync(taskName);
+
+          tasks = await TaskManager.getRegisteredTasksAsync();
+          alert("Tanımlananlar", tasks);
+        } else {
+          alert(`Task ${taskName} already registered, skipping`);
+        }
+
+        await BackgroundFetch.setMinimumIntervalAsync(15);
+
+        break;
+      }
+    }
+  };
   //fetching data once when the component loads
   useEffect(() => {
     _retrieveData();
+
+    taskManager();
   }, []);
 
   //Deletion of todo
@@ -167,3 +219,40 @@ const styles = StyleSheet.create({
     padding: 40,
   },
 });
+/*
+
+let newtodos = [];
+    todos.map((todo) => {
+      if (todo.due_date === "2021/03/17") {
+        newtodos = [
+          ...newtodos,
+          {
+            key: todo.key,
+            todo: todo.todo,
+            check: todo.check,
+            date: todo.date,
+            due_date: "Today",
+          },
+        ];
+      } else {
+        newtodos = [
+          ...newtodos,
+          {
+            key: todo.key,
+            todo: todo.todo,
+            check: todo.check,
+            date: todo.date,
+            due_date: todo.due_date,
+          },
+        ];
+      }
+      console.log("helooooooo", newtodos);
+    });
+    _storeData(newtodos);
+    dispatch({
+      type: actionTypes.SET_TODOS,
+      todos: newtodos,
+    });
+
+    
+*/

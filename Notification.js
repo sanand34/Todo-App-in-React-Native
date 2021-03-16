@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
-import React, { useState, useEffect, useRef } from "react";
-import { Text, View, Button, Platform } from "react-native";
+import React, { useEffect } from "react";
+import { View, Platform } from "react-native";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -12,32 +12,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function Notify() {
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        setNotification(notification);
-      }
-    );
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        console.log(response);
-      }
-    );
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener);
-      Notifications.removeNotificationSubscription(responseListener);
-    };
+    registerForPushNotificationsAsync();
   }, []);
 
   return <View></View>;
@@ -50,7 +26,7 @@ async function schedulePushNotification(title = "Hello", date = "world") {
       body: date,
       data: { data: "goes here" },
     },
-    trigger: { seconds: 2 },
+    trigger: { seconds: 1 },
   });
 }
 
