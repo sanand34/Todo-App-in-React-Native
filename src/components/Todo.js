@@ -11,44 +11,30 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { useStateValue } from "./StateProvider";
-import { actionTypes } from "./reducer";
-import { schedulePushNotification } from "./Notification.js";
+
+import { useStateValue } from "../containers/StateProvider";
+import { actionTypes } from "../reducers/reducer";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const { width } = Dimensions.get("window");
 import DatePicker from "react-native-datepicker";
+
+import { calenderDate } from "./Dates";
+
+const { width } = Dimensions.get("window");
+
 const Todo = ({ todo }) => {
   const [{ todos }, dispatch] = useStateValue();
   const [date, setDate] = useState();
-  // This is to manage Modal State
+
   const [isModalVisible, setModalVisible] = useState(false);
 
-  // This is to manage TextInput State
   const [inputValue, setInputValue] = useState("");
   const didMountRef = useRef(false);
 
-  // Create toggleModalVisibility function that will
-  // Open and close modal upon button clicks.
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
   };
-  const presentDate = () => {
-    let today = new Date();
 
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-
-    let yyyy = today.getFullYear();
-    if (dd < 10) {
-      dd = "0" + dd;
-    }
-    if (mm < 10) {
-      mm = "0" + mm;
-    }
-    return yyyy + "/" + mm + "/" + dd;
-  };
-  //viewing details about todo
   const viewData = () =>
     Alert.alert(
       todo.todo,
@@ -57,7 +43,6 @@ const Todo = ({ todo }) => {
       { cancelable: false }
     );
 
-  //storing data in async storage
   async function _storeData(value) {
     try {
       await AsyncStorage.setItem("10~Tasks", JSON.stringify(value));
@@ -66,11 +51,10 @@ const Todo = ({ todo }) => {
     }
   }
 
-  //if due date is current date set due date today
   useEffect(() => {
     if (didMountRef.current) {
       const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
-      if (presentDate() == todo.due_date) {
+      if (calenderDate() == todo.due_date) {
         _storeData([
           ...newinfo,
           {
@@ -134,7 +118,6 @@ const Todo = ({ todo }) => {
         <TouchableOpacity
           onPress={async () => {
             viewData();
-            await schedulePushNotification(todo.todo, todo.due_date);
           }}
         >
           <Text style={todo.check ? styles.textinvalid : styles.textvalid}>
@@ -215,7 +198,7 @@ const Todo = ({ todo }) => {
               mode="date"
               placeholder={date}
               format="YYYY/MM/DD"
-              minDate={presentDate()}
+              minDate={calenderDate()}
               maxDate="2030/05/01"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"

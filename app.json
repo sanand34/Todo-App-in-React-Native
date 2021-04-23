@@ -20,10 +20,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF",
-        "useNextNotificationsApi": true
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.sanchit34.todoappinnative"
+      "package": "com.sanchit34.todoappinnative",
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
