@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "361614538244",
+    "firebase_url": "https://messenger-b44ba-default-rtdb.firebaseio.com",
+    "project_id": "messenger-b44ba",
+    "storage_bucket": "messenger-b44ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361614538244:android:0e9dd69758a0290f86e751",
+        "android_client_info": {
+          "package_name": "com.todo_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361614538244-geo0stto4du6p8tm3ri93fdmtk18essn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASPrj0KsF_1Gdxisyn2AnL-myv5kxxqDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361614538244-geo0stto4du6p8tm3ri93fdmtk18essn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "361614538244-cslur1bp3hl1mdhudsm8b3htfc9g4irh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

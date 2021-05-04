@@ -1,18 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Modal,
-  TextInput,
-  Dimensions,
-  Button,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
-import { Checkbox } from "react-native-paper";
+import { View, StyleSheet, Modal, TextInput, Dimensions } from "react-native";
 
+import { CheckBox, Divider, Tooltip, Text, Icon } from "react-native-elements";
 import { useStateValue } from "../containers/StateProvider";
+
 import { actionTypes } from "../reducers/reducer";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,14 +25,6 @@ const Todo = ({ todo }) => {
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
   };
-
-  const viewData = () =>
-    Alert.alert(
-      todo.todo,
-      todo.date,
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-      { cancelable: false }
-    );
 
   async function _storeData(value) {
     try {
@@ -83,24 +66,21 @@ const Todo = ({ todo }) => {
   }, [todo.due_date]);
 
   return (
-    <View style={styles.container}>
-      <Checkbox
-        status={todo.check ? "checked" : "unchecked"}
-        onPress={() => {
-          const newinfo = todos.filter((thistodo) => thistodo.key !== todo.key);
-          _storeData([
-            ...newinfo,
-            {
-              key: todo.key,
-              todo: todo.todo,
-              check: !todo.check,
-              date: todo.date,
-              due_date: todo.due_date,
-            },
-          ]);
-          dispatch({
-            type: actionTypes.SET_TODOS,
-            todos: [
+    <View>
+      <View style={styles.container}>
+        <CheckBox
+          iconRight
+          checkedColor="green"
+          uncheckedColor="skyblue"
+          iconType="material"
+          uncheckedIcon="clear"
+          checkedIcon="done"
+          checked={todo.check}
+          onPress={() => {
+            const newinfo = todos.filter(
+              (thistodo) => thistodo.key !== todo.key
+            );
+            _storeData([
               ...newinfo,
               {
                 key: todo.key,
@@ -109,75 +89,76 @@ const Todo = ({ todo }) => {
                 date: todo.date,
                 due_date: todo.due_date,
               },
-            ],
-          });
-        }}
-        color="white"
-      />
-      <View style={styles.todo}>
-        <TouchableOpacity
-          onPress={async () => {
-            viewData();
+            ]);
+            dispatch({
+              type: actionTypes.SET_TODOS,
+              todos: [
+                ...newinfo,
+                {
+                  key: todo.key,
+                  todo: todo.todo,
+                  check: !todo.check,
+                  date: todo.date,
+                  due_date: todo.due_date,
+                },
+              ],
+            });
           }}
+          color="white"
+        />
+        <View style={styles.todo}>
+          <Tooltip
+            backgroundColor={"lightblue"}
+            popover={<Text style={{ color: "white" }}>{todo.date}</Text>}
+          >
+            <Text style={todo.check ? styles.textinvalid : styles.textvalid}>
+              {todo.todo}
+            </Text>
+          </Tooltip>
+
+          <Text
+            style={todo.due_date === "Today" ? styles.text1 : styles.text2}
+          >{`${todo.due_date}`}</Text>
+        </View>
+
+        <Icon
+          name="trash"
+          type="font-awesome"
+          color="#f50"
+          onPress={() => {
+            dispatch({
+              type: actionTypes.SET_USER,
+              user: todo.key,
+            });
+          }}
+        />
+
+        <Icon
+          name="pencil"
+          type="font-awesome"
+          color="skyblue"
+          onPress={toggleModalVisibility}
+        />
+
+        <Modal
+          animationType="slide"
+          transparent
+          visible={isModalVisible}
+          presentationStyle="overFullScreen"
+          onDismiss={toggleModalVisibility}
         >
-          <Text style={todo.check ? styles.textinvalid : styles.textvalid}>
-            {todo.todo}
-          </Text>
-        </TouchableOpacity>
-        <Text
-          style={todo.due_date === "Today" ? styles.text1 : styles.text2}
-        >{`Due:${todo.due_date}`}</Text>
-      </View>
-
-      <Button
-        title="delete"
-        color="rgb(100,73,234)"
-        onPress={() => {
-          dispatch({
-            type: actionTypes.SET_USER,
-            user: todo.key,
-          });
-        }}
-      >
-        Delete
-      </Button>
-      <Button
-        color="rgb(100,73,234)"
-        title="Edit"
-        onPress={toggleModalVisibility}
-      />
-
-      <Modal
-        animationType="slide"
-        transparent
-        visible={isModalVisible}
-        presentationStyle="overFullScreen"
-        onDismiss={toggleModalVisibility}
-      >
-        <View style={styles.viewWrapper}>
-          <View style={styles.modalView}>
-            <TextInput
-              placeholder="Edit Todo..."
-              value={inputValue}
-              style={styles.textInput}
-              onChangeText={(value) => setInputValue(value)}
-              onSubmitEditing={() => {
-                const newinfo = todos.filter(
-                  (thistodo) => thistodo.key !== todo.key
-                );
-                _storeData([
-                  ...newinfo,
-                  {
-                    key: todo.key,
-                    todo: inputValue,
-                    check: todo.check,
-                    date: todo.date,
-                    due_date: todo.due_date,
-                  },
-                ]);
-                dispatch({
-                  type: actionTypes.SET_TODOS,
-                  todos: [
+          <View style={styles.viewWrapper}>
+            <View style={styles.modalView}>
+              <TextInput
+                placeholder="Edit Todo..."
+                value={inputValue}
+                style={styles.textInput}
+                onChangeText={(value) => setInputValue(value)}
+                onSubmitEditing={() => {
+                  const newinfo = todos.filter(
+                    (thistodo) => thistodo.key !== todo.key
+                  );
+                  _storeData([
                     ...newinfo,
                     {
                       key: todo.key,
@@ -186,51 +167,51 @@ const Todo = ({ todo }) => {
                       date: todo.date,
                       due_date: todo.due_date,
                     },
-                  ],
-                });
-                setInputValue("");
-                toggleModalVisibility();
-              }}
-            />
-            <DatePicker
-              style={{ width: 200 }}
-              date={date}
-              mode="date"
-              placeholder={date}
-              format="YYYY/MM/DD"
-              minDate={calenderDate()}
-              maxDate="2030/05/01"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: "absolute",
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0,
-                },
-                dateInput: {
-                  marginLeft: 36,
-                },
-                // ... You can check the source to find the other keys.
-              }}
-              onDateChange={(date) => {
-                const newinfo = todos.filter(
-                  (thistodo) => thistodo.key !== todo.key
-                );
-                _storeData([
-                  ...newinfo,
-                  {
-                    key: todo.key,
-                    todo: todo.todo,
-                    check: todo.check,
-                    date: todo.date,
-                    due_date: date,
+                  ]);
+                  dispatch({
+                    type: actionTypes.SET_TODOS,
+                    todos: [
+                      ...newinfo,
+                      {
+                        key: todo.key,
+                        todo: inputValue,
+                        check: todo.check,
+                        date: todo.date,
+                        due_date: todo.due_date,
+                      },
+                    ],
+                  });
+                  setInputValue("");
+                  toggleModalVisibility();
+                }}
+              />
+              <DatePicker
+                style={{ width: 200 }}
+                date={date}
+                mode="date"
+                placeholder={date}
+                format="YYYY/MM/DD"
+                minDate={calenderDate()}
+                maxDate="2030/05/01"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: "absolute",
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
                   },
-                ]);
-                dispatch({
-                  type: actionTypes.SET_TODOS,
-                  todos: [
+                  dateInput: {
+                    marginLeft: 36,
+                  },
+                  // ... You can check the source to find the other keys.
+                }}
+                onDateChange={(date) => {
+                  const newinfo = todos.filter(
+                    (thistodo) => thistodo.key !== todo.key
+                  );
+                  _storeData([
                     ...newinfo,
                     {
                       key: todo.key,
@@ -239,23 +220,38 @@ const Todo = ({ todo }) => {
                       date: todo.date,
                       due_date: date,
                     },
-                  ],
-                });
-                setDate(date);
+                  ]);
+                  dispatch({
+                    type: actionTypes.SET_TODOS,
+                    todos: [
+                      ...newinfo,
+                      {
+                        key: todo.key,
+                        todo: todo.todo,
+                        check: todo.check,
+                        date: todo.date,
+                        due_date: date,
+                      },
+                    ],
+                  });
+                  setDate(date);
 
-                toggleModalVisibility();
-              }}
-            />
-            <View style={{ margin: 10 }}>
-              <Button
-                color="rgb(100,73,234)"
-                title="Close"
-                onPress={toggleModalVisibility}
+                  toggleModalVisibility();
+                }}
               />
+              <View style={{ margin: 10 }}>
+                <Icon
+                  name="close"
+                  type="font-awesome"
+                  color="red"
+                  onPress={toggleModalVisibility}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </View>
+      <Divider style={{ backgroundColor: "black" }} />
     </View>
   );
 };
@@ -266,13 +262,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
   },
   viewWrapper: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   modalView: {
     alignItems: "center",
@@ -292,15 +286,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderColor: "rgba(0, 0, 0, 0.2)",
     borderWidth: 1,
     marginBottom: 8,
   },
   container: {
     flex: 1,
-    margin: 10,
-    backgroundColor: "rgb(100,73,234)",
-    borderRadius: 10,
+    margin: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
@@ -308,7 +299,7 @@ const styles = StyleSheet.create({
   textvalid: {
     fontSize: 30,
 
-    color: "white",
+    color: "black",
   },
   text1: {
     fontSize: 20,
@@ -318,7 +309,7 @@ const styles = StyleSheet.create({
   text2: {
     fontSize: 20,
 
-    color: "lightgreen",
+    color: "green",
   },
   textinvalid: {
     fontSize: 30,

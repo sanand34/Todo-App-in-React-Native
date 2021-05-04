@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Appbar, TextInput } from "react-native-paper";
+import { Input, Header } from "react-native-elements";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import { v4 } from "uuid";
 import { useStateValue } from "./containers/StateProvider";
@@ -87,20 +88,22 @@ function Main() {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={styles.header}>
-        <Appbar.Content title="Todo App" subtitle={"Sanchit Anand"} />
-      </Appbar.Header>
+      <Header
+        leftComponent={{ icon: "menu", color: "#fff" }}
+        centerComponent={{ text: "TODOS", style: { color: "#fff" } }}
+        rightComponent={{ icon: "home", color: "#fff" }}
+      />
 
       <ScrollView style={styles.body}>
         {todos.sortBy("due_date").map((todo) => (
           <Todo key={todo.key} todo={todo} />
         ))}
       </ScrollView>
-      <Notification todos={todos} />
 
       <View>
-        <TextInput
-          label="Add Todo"
+        <Input
+          placeholder="Add Todos...."
+          leftIcon={<Icon name="list" size={24} color="black" />}
           value={input}
           onChangeText={(text) => {
             setInput(text);
@@ -148,7 +151,6 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    backgroundColor: "rgb(34,34,34)",
     paddingTop: 10,
     height: 10,
   },
