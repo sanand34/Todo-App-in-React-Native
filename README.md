@@ -1,5 +1,5 @@
 # Todo-app-in-react-native
-![Alt text](./Todo?raw=true "Title")
+![Alt text](./Todo.gif)
 
 
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
